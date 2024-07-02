@@ -114,6 +114,10 @@ class SemanticMatchingService:
             url = f"{remote_matching_service}/get_matches"
             new_matches_response = requests.get(url, json=remote_matching_request.dict())
             match_response = service_model.MatchesList.model_validate_json(new_matches_response.text)
+            for remote_match in match_response.matches:
+                remote_match.meta_information["relative_semantic_id"] = match.meta_information["relative_semantic_id"]
+                remote_match.meta_information["relative_score"] = \
+                    match.meta_information["relative_score"] * remote_match.score
             additional_remote_matches.extend(match_response.matches)
         # Finally, put all matches together and return
         matches.extend(additional_remote_matches)
