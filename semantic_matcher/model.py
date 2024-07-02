@@ -49,7 +49,8 @@ class EquivalenceTable(BaseModel):
                 rec_result = self.get_local_matches(match.match_semantic_id, score_limit/match.score)
                 for rec_match in rec_result:
                     rec_match.meta_information["relative_semantic_id"] = match.meta_information["relative_semantic_id"]
-                    rec_match.meta_information["relative_score"] = match.meta_information["relative_score"] * rec_match
+                    rec_match.meta_information["relative_score"] = \
+                        match.meta_information["relative_score"] * rec_match.score
                 if rec_result is not None:
                     matching_result += rec_result
         return matching_result
