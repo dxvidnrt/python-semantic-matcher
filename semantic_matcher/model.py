@@ -42,13 +42,13 @@ class EquivalenceTable(BaseModel):
             return []
         matching_result = []
         for match in equivalence_table_result:
-            match.meta_information["path"] = [match.base_semantic_id]
             match.meta_information["relative_score"] = match.score
             if match.score > score_limit:
                 matching_result.append(match)
                 rec_results = self.get_local_matches(match.match_semantic_id, score_limit/match.score)
                 for rec_result in rec_results:
-                    rec_result.meta_information["path"].insert(0, match.meta_information["path"])
+                    if "previous_match" not in rec_result.meta_information:
+                        rec_result.meta_information["previous_math"] = match.base_semantic_id
                     rec_result.meta_information["relative_score"] *= match.meta_information["relative_score"]
                 if rec_results is not None:
                     matching_result += rec_results

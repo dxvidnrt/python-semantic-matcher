@@ -115,8 +115,8 @@ class SemanticMatchingService:
             new_matches_response = requests.get(url, json=remote_matching_request.dict())
             match_response = service_model.MatchesList.model_validate_json(new_matches_response.text)
             for remote_match in match_response.matches:
-                remote_match.meta_information["path"] = \
-                    match.meta_information["path"] + (remote_match.meta_information["path"])
+                if "previous_match" not in remote_match.meta_information:
+                    remote_match.meta_information["previous_match"] = match.base_semantic_id
                 remote_match.meta_information["relative_score"] *= match.meta_information["relative_score"]
             additional_remote_matches.extend(match_response.matches)
         # Finally, put all matches together and return
